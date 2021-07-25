@@ -18,7 +18,7 @@ namespace Doing.API.Controllers
             _bus = bus;
         }
 
-        [HttpPost("register")]
+        [HttpPost("")]
         public async Task<IActionResult> Post([FromBody]CreateUser command)
         {
             await _bus.PublishAsync(command);

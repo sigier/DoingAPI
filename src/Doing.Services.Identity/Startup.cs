@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Doing.Common.Commands;
+using Doing.Common.Mongo;
 using Doing.Common.RabbitMq;
 using Doing.Services.Identity.Domain.Repositories;
 using Doing.Services.Identity.Domain.Services;
@@ -39,12 +40,21 @@ namespace Doing.Services.Identity
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Doing.Services.Identity", Version = "v1" });
             });
 
-            services.AddScoped<ICommandHandler<CreateUser>, CreateUserHandler>();
-           
+            services.AddLogging();
+
+            services.AddMongoDb(Configuration);
+            
+            services.AddRabbitMq(Configuration);
+                                  
             services.AddScoped<IEncrypter, Encrypter>();
 
             services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<IUserService, UserService>();
+
+            services.AddScoped<ICommandHandler<CreateUser>, CreateUserHandler>();
         }
+
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,6 +77,10 @@ namespace Doing.Services.Identity
             {
                 endpoints.MapControllers();
             });
+
+            app.ApplicationServices
+                .GetService<IMongoDatabaseInitializer>()
+                .InitializeAsync();
         }
     }
 }
