@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Doing.Common.Commands;
 using Doing.Common.RabbitMq;
+using Doing.Services.Identity.Domain.Services;
 using Doing.Services.Identity.Handlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,6 +39,7 @@ namespace Doing.Services.Identity
 
             services.AddScoped<ICommandHandler<CreateUser>, CreateUserHandler>();
            
+            services.AddScoped<IEncrypter, Encrypter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

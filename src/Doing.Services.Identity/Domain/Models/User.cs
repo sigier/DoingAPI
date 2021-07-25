@@ -1,5 +1,6 @@
 using System;
 using Doing.Common.Exceptions;
+using Doing.Services.Identity.Domain.Services;
 
 namespace Doing.Services.Identity.Domain.Models
 {
@@ -39,6 +40,24 @@ namespace Doing.Services.Identity.Domain.Models
             Email = email.ToLowerInvariant();
             Name = name;
             CreatedAt = DateTime.UtcNow;
+        }
+
+        public void SetPassword(string password, IEncrypter encrypter)
+        {
+            if (string.IsNullOrEmpty(password))
+            {
+                throw new DoingException("empty_password", 
+                $"No password provided.");
+            }
+
+            Salt = encrypter.GetSalt();
+
+            Password = encrypter.GetHash(password, Salt);
+        }
+
+        public bool IsPasswordValid(string password, IEncrypter encrypter)
+        {
+            return Password.Equals(encrypter.GetHash(password, Salt));
         }
     }
 }
