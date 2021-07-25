@@ -19,7 +19,7 @@ namespace Doing.Services.Identity.Handlers
 
         public CreateUserHandler(IBusClient bus,
             IUserService userService,
-            ILogger<CreateUser> logger)
+            ILogger<CreateUserHandler> logger)
         {
             _bus = bus;
             _logger = logger;
