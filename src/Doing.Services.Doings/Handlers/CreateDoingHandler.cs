@@ -63,8 +63,6 @@ namespace Doing.Services.Doings.Handlers
                 await _bus.PublishAsync(
                  new CreateDoingRejectedEvent(command.Id, "error", ex.Message));
             }
-
-           
         }
     }
 }

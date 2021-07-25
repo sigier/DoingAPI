@@ -1,6 +1,7 @@
 using Doing.API.Handlers;
 using Doing.Common.Commands;
 using Doing.Common.Events;
+using Doing.Common.Mongo;
 using Doing.Common.RabbitMq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +32,8 @@ namespace Doing.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Doing.API", Version = "v1" });
             });
 
+            services.AddMongoDb(Configuration);
+            
             services.AddRabbitMq(Configuration);
 
             services
@@ -57,6 +60,10 @@ namespace Doing.API
             {
                 endpoints.MapControllers();
             });
+
+            app.ApplicationServices
+                .GetService<IMongoDatabaseInitializer>()
+                .InitializeAsync();
         }
     }
 }

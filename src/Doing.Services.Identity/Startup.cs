@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Doing.Common.Commands;
 using Doing.Common.RabbitMq;
+using Doing.Services.Identity.Domain.Repositories;
 using Doing.Services.Identity.Domain.Services;
 using Doing.Services.Identity.Handlers;
+using Doing.Services.Identity.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -40,7 +42,10 @@ namespace Doing.Services.Identity
             services.AddScoped<ICommandHandler<CreateUser>, CreateUserHandler>();
            
             services.AddScoped<IEncrypter, Encrypter>();
+
+            services.AddScoped<IUserRepository, UserRepository>();
         }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

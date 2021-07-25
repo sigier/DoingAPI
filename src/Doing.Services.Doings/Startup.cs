@@ -82,8 +82,8 @@ namespace Doing.Services.Doings
             });
 
             app.ApplicationServices
-             .GetService<IMongoDatabaseInitializer>()
-             .InitializeAsync();
+                .GetService<IMongoDatabaseInitializer>()
+                .InitializeAsync();
         }
     }
 }
