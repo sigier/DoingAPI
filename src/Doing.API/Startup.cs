@@ -34,7 +34,7 @@ namespace Doing.API
             services.AddRabbitMq(Configuration);
 
             services
-                .AddTransient<IEventHandler<CreateDoingEvent>, CreateDoingHandler>();
+                .AddScoped<IEventHandler<CreateDoingEvent>, CreateDoingHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

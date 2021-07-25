@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Doing.Common.Commands;
+using Doing.Common.Mongo;
 using Doing.Common.RabbitMq;
+using Doing.Services.Doings.Domain.Repositories;
 using Doing.Services.Doings.Handlers;
+using Doing.Services.Doings.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -36,10 +39,25 @@ namespace Doing.Services.Doings
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Doing.Services.Doings", Version = "v1" });
             });
 
-             services.AddRabbitMq(Configuration);
+
+            services.AddMongoDb(Configuration);
+
+            services.AddRabbitMq(Configuration);
 
             services
-                .AddTransient<ICommandHandler<CreateDoing>, CreateDoingHandler>();
+                .AddScoped<ICommandHandler<CreateDoing>, CreateDoingHandler>();
+
+            services
+                .AddScoped<ICategoryRepository, CategoryRepository>();
+            
+            services
+                .AddScoped<IDoingRepository, DoingRepository>();
+
+            services
+                .AddScoped<IMongoDatabaseSeeder, CustomMongoSeeder>();
+        
+            services
+                .AddScoped<IDoingService, DoingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +80,10 @@ namespace Doing.Services.Doings
             {
                 endpoints.MapControllers();
             });
+
+            app.ApplicationServices
+             .GetService<IMongoDatabaseInitializer>()
+             .InitializeAsync();
         }
     }
 }
