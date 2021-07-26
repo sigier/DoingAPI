@@ -12,6 +12,6 @@ namespace Doing.API.Repositories
 
         Task AddAsync(DoingDto model);
 
-        Task <IEnumerable<DoingDto>> BrowseAll(Guid userId);
+        Task <IEnumerable<DoingDto>> BrowseAllAsync(Guid userId);
     }
 }

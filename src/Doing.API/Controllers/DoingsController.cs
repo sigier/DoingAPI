@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Doing.API.Repositories;
 using Doing.Common.Commands;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -8,16 +10,20 @@ using RawRabbit;
 
 namespace Doing.API.Controllers
 {
-    [ApiController]
+
     [Route("[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class DoingsController : ControllerBase
+    public class DoingsController : Controller
     {
         private readonly IBusClient _bus;
 
-        public DoingsController(IBusClient bus)
+        private readonly IDoingRepository _doingRepository;
+
+        public DoingsController(IBusClient bus,
+                IDoingRepository doingRepository)
         {
             _bus= bus;
+            _doingRepository = doingRepository;
         }
 
         [HttpPost("")]
@@ -27,15 +33,40 @@ namespace Doing.API.Controllers
 
             command.CreatedAt = DateTime.UtcNow;
 
+            command.UserId = Guid.Parse(User.Identity.Name);
+
             await _bus.PublishAsync(command);
 
             return Accepted($"doings/{command.Id} published");
         }
 
         [HttpGet("")]
-        public ActionResult Get()
+        public async Task<ActionResult> Get()
         {
-            return Content("string secured");
+            var doings = await _doingRepository
+                    .BrowseAllAsync(Guid.Parse(User.Identity.Name));
+            return Json(doings.Select(x =>
+             new {x.Id, x.Name, x.Category, x.CreatedAt }));
+
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult> Get(Guid id)
+        {
+            var doing = await _doingRepository
+                    .GetAsync(id);
+            
+            if (doing == null)
+            {
+                return NotFound();
+            }
+
+            if (doing.UserId == Guid.Parse(User.Identity.Name))
+            {
+                return Unauthorized();
+            }
+          
+            return Json(doing);
         }
 
     }
