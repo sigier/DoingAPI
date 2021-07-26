@@ -1,4 +1,5 @@
 using Doing.API.Handlers;
+using Doing.API.Repositories;
 using Doing.Common.Auth;
 using Doing.Common.Commands;
 using Doing.Common.Events;
@@ -41,6 +42,9 @@ namespace Doing.API
 
             services
                 .AddScoped<IEventHandler<CreateDoingEvent>, CreateDoingHandler>();
+
+            services
+                .AddScoped<IDoingRepository, DoingRepository>();
            
         }
 
