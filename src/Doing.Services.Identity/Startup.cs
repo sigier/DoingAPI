@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Doing.Common.Auth;
 using Doing.Common.Commands;
 using Doing.Common.Mongo;
 using Doing.Common.RabbitMq;
@@ -41,6 +42,8 @@ namespace Doing.Services.Identity
             });
 
             services.AddLogging();
+
+            services.AddJwt(Configuration);
 
             services.AddMongoDb(Configuration);
             

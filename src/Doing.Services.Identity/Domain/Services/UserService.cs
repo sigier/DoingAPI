@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Doing.Common.Auth;
 using Doing.Common.Exceptions;
 using Doing.Services.Identity.Domain.Models;
 using Doing.Services.Identity.Domain.Repositories;
@@ -11,13 +12,18 @@ namespace Doing.Services.Identity.Domain.Services
 
         private readonly IEncrypter _encrypter;
 
-        public UserService(IUserRepository userRepository, IEncrypter encrypter)
+        private readonly IJwtHandler _jwtHandler;
+
+        public UserService(IUserRepository userRepository,
+                 IEncrypter encrypter,
+                 IJwtHandler jwtHandler)
         {
             _userRepository = userRepository;
             _encrypter = encrypter;
+            _jwtHandler = jwtHandler;
         }
 
-        public async Task LogInAsync(string email, string password)
+        public async Task<JsonWebToken> LogInAsync(string email, string password)
         {
             var user = await _userRepository.GetAsync(email);
 
@@ -27,6 +33,8 @@ namespace Doing.Services.Identity.Domain.Services
                     $"Invalid credentials provided"
                 );
             }
+
+            return _jwtHandler.Create(user.Id);
         }
 
         public async Task RegisterAsync(string email, string password, string name)

@@ -60,10 +60,10 @@ namespace Doing.Common.Auth
 
             var payload = new JwtPayload
             {   
-                { "subj", userId },
-                { "issuer", _options.IssuerOfToken },
-                { "issuedat", longNow },
-                { "expiresat", longExpiration },
+                { "sub", userId },
+                { "iss", _options.IssuerOfToken },
+                { "iat", longNow },
+                { "exp", longExpiration },
                 { "unique_name", userId }
             };
 

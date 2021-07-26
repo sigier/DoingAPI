@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Doing.Common.Auth;
 
 namespace Doing.Services.Identity.Domain.Services
 {
@@ -6,6 +7,6 @@ namespace Doing.Services.Identity.Domain.Services
     {
         Task RegisterAsync(string email, string password, string name);
         
-        Task LogInAsync(string email, string password);
+        Task<JsonWebToken> LogInAsync(string email, string password);
     }
 }

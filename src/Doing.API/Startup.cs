@@ -1,4 +1,5 @@
 using Doing.API.Handlers;
+using Doing.Common.Auth;
 using Doing.Common.Commands;
 using Doing.Common.Events;
 using Doing.Common.Mongo;
@@ -32,6 +33,8 @@ namespace Doing.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Doing.API", Version = "v1" });
             });
 
+            services.AddJwt(Configuration);
+
             services.AddMongoDb(Configuration);
             
             services.AddRabbitMq(Configuration);
@@ -62,9 +65,14 @@ namespace Doing.API
                 endpoints.MapControllers();
             });
 
+            
+
             app.ApplicationServices
                 .GetService<IMongoDatabaseInitializer>()
                 .InitializeAsync();
+
+            app.UseAuthentication();
+
         }
     }
 }
