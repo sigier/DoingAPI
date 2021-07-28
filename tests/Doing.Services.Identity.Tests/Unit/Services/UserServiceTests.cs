@@ -2,6 +2,7 @@
 using Doing.Services.Identity.Domain.Models;
 using Doing.Services.Identity.Domain.Repositories;
 using Doing.Services.Identity.Domain.Services;
+using FluentAssertions;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace Doing.Services.Identity.Tests.Unit.Services
     public class UserServiceTests
     {
         [Fact]
-        public async Task user_service_login_should_return_jwt()
+        public async Task User_service_login_should_return_jwt()
         {
             var email = "test@test.com";
             var password = "secret";
@@ -49,10 +50,14 @@ namespace Doing.Services.Identity.Tests.Unit.Services
                 encrypterMock.Object, jwtHandlerMock.Object);
 
             var jwt = await userService.LogInAsync(email, password);
+
             userRepositoryMock.Verify(x => x.GetAsync(email), Times.Once);
+
             jwtHandlerMock.Verify(x => x.Create(It.IsAny<Guid>()), Times.Once);
+
             jwt.Should().NotBeNull();
-            jwt.Token.ShouldBeEquivalentTo(token);
+
+            jwt.Token.Should().BeEquivalentTo(token);
         }
     }
 }

@@ -1,14 +1,10 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.AspNetCore.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using Shouldly;
+using FluentAssertions;
 
 namespace Doing.Services.Doings.Tests.Integration.Controllers
 {
@@ -33,7 +29,7 @@ namespace Doing.Services.Doings.Tests.Integration.Controllers
 
             var content = await response.Content.ReadAsStringAsync();
 
-            content.ShouldBeEquivalentTo("Signal from Doing API");
+            content.Should().BeEquivalentTo("Signal from Doing API");
         }
 
     }
